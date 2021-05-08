@@ -11,7 +11,6 @@ module.exports = function (io) {
   // var sendResponse = function () {};
 
   io.sockets.on("connection", function (socket) {
-    console.log("hello");
     // Everytime a client logs in, display a connected message
     console.log("Server-Client Connected!");
 
@@ -36,7 +35,6 @@ module.exports = function (io) {
     // io.to(pickedUser).emit("taskRequest", req.body);
     // console.log(req.body.image);
     // sendResponse = function (data) {
-    console.log(req.user.id);
     io.to(req.user.id).emit("imageFromServer", {
       image: req.body.image,
     });
