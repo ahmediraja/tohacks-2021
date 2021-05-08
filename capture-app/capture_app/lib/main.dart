@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
+import 'login.dart';
+
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
   // can be called before `runApp()`
@@ -18,10 +20,11 @@ Future<void> main() async {
   runApp(
     MaterialApp(
       theme: ThemeData.dark(),
-      home: TakePictureScreen(
-        // Pass the appropriate camera to the TakePictureScreen widget.
-        camera: firstCamera,
-      ),
+      home: LoginPage(),
+      // home: TakePictureScreen(
+      //   // Pass the appropriate camera to the TakePictureScreen widget.
+      //   camera: firstCamera,
+      // ),
     ),
   );
 }
@@ -151,6 +154,10 @@ class DisplayPictureScreen extends StatelessWidget {
         child: Icon(Icons.send),
         onPressed: () async {
           try {
+            // --------------------------
+            // INSERT POST IMAGE CODE HERE
+            // --------------------------
+
             // Obtain a list of the available cameras on the device.
             final cameras = await availableCameras();
 
