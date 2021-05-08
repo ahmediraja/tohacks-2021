@@ -5,17 +5,18 @@ const auth = require("../../middleware/auth");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 const User = require("../../models/User");
+const validateRegisterInput = require("../../validation/register");
 
 // @route    POST api/users
 // @desc     Register user
 // @access   Public
 router.post("/", async (req, res) => {
   console.log(User);
-  // const { errors, isValid } = validateRegisterInput(req.body);
-  // if (!isValid) {
-  //   console.log(errors)
-  //   return res.status(400).json({errors:errors});
-  // }
+  const { errors, isValid } = validateRegisterInput(req.body);
+  if (!isValid) {
+    console.log(errors);
+    return res.status(400).json({ errors: errors });
+  }
   const { email, password } = req.body;
 
   try {

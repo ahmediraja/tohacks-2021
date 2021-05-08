@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const auth = require("../../middleware/auth");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
-// const validateLoginInput from "../../validation/login";
+const validateLoginInput = require("../../validation/login");
 // const validatePwResetInput from "../../validation/pwReset";
 const User = require("../../models/User");
 // const nodemailer = 'nodemailer';

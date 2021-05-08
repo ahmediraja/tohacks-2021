@@ -11,10 +11,12 @@ module.exports = function (io) {
   // var sendResponse = function () {};
 
   io.sockets.on("connection", function (socket) {
+    console.log("hello");
     // Everytime a client logs in, display a connected message
     console.log("Server-Client Connected!");
 
     socket.on("connected", function (account_id) {
+      console.log(account_id);
       socket.join(account_id);
     });
 
@@ -28,18 +30,17 @@ module.exports = function (io) {
     // });
   });
 
-  router.post("/", async (req, res) => {
+  router.post("/", auth, async (req, res) => {
     //pickedUser is one of the connected client
     // var pickedUser = "JZLpeA4pBECwbc5IAAAA";
     // io.to(pickedUser).emit("taskRequest", req.body);
-    console.log(req.body.image);
+    // console.log(req.body.image);
     // sendResponse = function (data) {
-    //   io.to(conversationObj._id).emit("message", {
-    //     message: newMessage,
-    //     username: data.profile.username,
-    //     userToChat: data.userToChat,
-    //   });
-    //   return res.status(200).json({ text: "Success", response: data.data });
+    console.log(req.user.id);
+    io.to(req.user.id).emit("imageFromServer", {
+      image: req.body.image,
+    });
+    return res.status(200).json({ success: true });
     // };
   });
 
