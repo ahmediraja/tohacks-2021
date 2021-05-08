@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
-import 'login.dart';
 
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
@@ -21,21 +21,13 @@ Future<void> main() async {
   runApp(
     MaterialApp(
       theme: ThemeData.dark(),
-      home: LoginPage(),
-      // home: TakePictureScreen(
-      //   // Pass the appropriate camera to the TakePictureScreen widget.
-      //   camera: firstCamera,
-      // ),
+      home: TakePictureScreen(
+        // Pass the appropriate camera to the TakePictureScreen widget.
+        camera: firstCamera,
+      ),
     ),
   );
 }
-
-// class DummyWidget extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) => TakePictureScreen(
-//     camera: firstCamera,
-//   );
-// }
 
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
@@ -77,64 +69,65 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     super.dispose();
   }
 
+  String imageToBase64(File imageFile) {
+    List<int> imageBytes = imageFile.readAsBytesSync();
+    return base64Encode(imageBytes);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: () {
-          return new Future(() => false);
+    return Scaffold(
+      appBar: AppBar(title: Text('Take a picture')),
+      // Wait until the controller is initialized before displaying the
+      // camera preview. Use a FutureBuilder to display a loading spinner
+      // until the controller has finished initializing.
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            // If the Future is complete, display the preview.
+            return CameraPreview(_controller);
+          } else {
+            // Otherwise, display a loading indicator.
+            return Center(child: CircularProgressIndicator());
+          }
         },
-        child: Scaffold(
-          appBar: AppBar(
-              title: Text('Take a picture'), automaticallyImplyLeading: false),
-          // Wait until the controller is initialized before displaying the
-          // camera preview. Use a FutureBuilder to display a loading spinner
-          // until the controller has finished initializing.
-          body: FutureBuilder<void>(
-            future: _initializeControllerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the Future is complete, display the preview.
-                return CameraPreview(_controller);
-              } else {
-                // Otherwise, display a loading indicator.
-                return Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
-          floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.camera_alt),
-            // Provide an onPressed callback.
-            onPressed: () async {
-              // Take the Picture in a try / catch block. If anything goes wrong,
-              // catch the error.
-              try {
-                // Ensure that the camera is initialized.
-                await _initializeControllerFuture;
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.camera_alt),
+        // Provide an onPressed callback.
+        onPressed: () async {
+          // Take the Picture in a try / catch block. If anything goes wrong,
+          // catch the error.
+          try {
+            // Ensure that the camera is initialized.
+            await _initializeControllerFuture;
 
-                // Attempt to take a picture and get the file `image`
-                // where it was saved.
-                final image = await _controller.takePicture();
+            // Attempt to take a picture and get the file `image`
+            // where it was saved.
+            final imageXFile = await _controller.takePicture();
+            File imageFile = File(imageXFile.path);
+            log(imageToBase64(imageFile));
 
-                // If the picture was taken, display it on a new screen.
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DisplayPictureScreen(
-                      // Pass the automatically generated path to
-                      // the DisplayPictureScreen widget.
-                      imagePath: image?.path,
-                    ),
-                  ),
-                );
-              } catch (e) {
-                // If an error occurs, log the error to the console.
-                print(e);
-              }
-            },
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-        ));
+
+            // If the picture was taken, display it on a new screen.
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DisplayPictureScreen(
+                  // Pass the automatically generated path to
+                  // the DisplayPictureScreen widget.
+                  imagePath: imageXFile?.path,
+                ),
+              ),
+            );
+          } catch (e) {
+            // If an error occurs, log the error to the console.
+            print(e);
+          }
+        },
+      ),
+    );
   }
 }
 
@@ -147,41 +140,10 @@ class DisplayPictureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Preview')),
+      appBar: AppBar(title: Text('Display the Picture')),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
       body: Image.file(File(imagePath)),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.send),
-        onPressed: () async {
-          try {
-            // --------------------------
-            // INSERT POST IMAGE CODE HERE
-            // --------------------------
-
-            // Obtain a list of the available cameras on the device.
-            final cameras = await availableCameras();
-
-            // Get a specific camera from the list of available cameras.
-            final firstCamera = cameras.first;
-
-            // If the picture was sent, go back to taking picture screen.
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TakePictureScreen(
-                  // Pass the automatically generated path to
-                  // the DisplayPictureScreen widget.
-                  camera: firstCamera,
-                ),
-              ),
-            );
-          } catch (e) {
-            // If an error occurs, log the error to the console.
-            print(e);
-          }
-        },
-      ),
     );
   }
 }
