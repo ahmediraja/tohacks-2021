@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -66,8 +67,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     super.dispose();
   }
 
-  String imageToBase64(XFile image){
-    return image.path;
+  Future<String> imageToBase64(File image) async {
+    return base64Encode(await image.readAsBytes());
   }
 
   @override
@@ -101,8 +102,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
             // Attempt to take a picture and get the file `image`
             // where it was saved.
-            final image = await _controller.takePicture();
-            debugPrint(imageToBase64(image));
+            final imageXFile = await _controller.takePicture();
+            final imageBytes = File(imageXFile.path).readAsBytesSync();
+            debugPrint(base64Encode(imageBytes));
+
+
             // If the picture was taken, display it on a new screen.
             Navigator.push(
               context,
@@ -110,7 +114,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                 builder: (context) => DisplayPictureScreen(
                   // Pass the automatically generated path to
                   // the DisplayPictureScreen widget.
-                  imagePath: image?.path,
+                  imagePath: imageXFile?.path,
                 ),
               ),
             );
