@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:convert';
 
@@ -67,8 +68,9 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     super.dispose();
   }
 
-  Future<String> imageToBase64(File image) async {
-    return base64Encode(await image.readAsBytes());
+  String imageToBase64(File imageFile) {
+    List<int> imageBytes = imageFile.readAsBytesSync();
+    return base64Encode(imageBytes);
   }
 
   @override
@@ -103,8 +105,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             // Attempt to take a picture and get the file `image`
             // where it was saved.
             final imageXFile = await _controller.takePicture();
-            final imageBytes = File(imageXFile.path).readAsBytesSync();
-            debugPrint(base64Encode(imageBytes));
+            File imageFile = File(imageXFile.path);
+            log(imageToBase64(imageFile));
 
 
             // If the picture was taken, display it on a new screen.
