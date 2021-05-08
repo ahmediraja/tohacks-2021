@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:camera/camera.dart';
+import 'package:capture_app/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -21,10 +22,11 @@ Future<void> main() async {
   runApp(
     MaterialApp(
       theme: ThemeData.dark(),
-      home: TakePictureScreen(
-        // Pass the appropriate camera to the TakePictureScreen widget.
-        camera: firstCamera,
-      ),
+      home: LoginPage(),
+      // home: TakePictureScreen(
+      //   // Pass the appropriate camera to the TakePictureScreen widget.
+      //   camera: firstCamera,
+      // ),
     ),
   );
 }
@@ -108,7 +110,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             final imageXFile = await _controller.takePicture();
             File imageFile = File(imageXFile.path);
             log(imageToBase64(imageFile));
-
 
             // If the picture was taken, display it on a new screen.
             Navigator.push(

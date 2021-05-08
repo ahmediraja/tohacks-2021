@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       initialValue: '',
-      controller: emailController,
+      // controller: emailController,
       decoration: InputDecoration(
         hintText: 'Email',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     final password = TextFormField(
       autofocus: false,
       initialValue: '',
-      controller: passController,
+      // controller: passController,
       obscureText: true,
       decoration: InputDecoration(
         hintText: 'Password',
