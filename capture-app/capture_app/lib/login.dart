@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:http/http.dart' as http;
 
 import 'main.dart';
 
@@ -10,6 +13,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController emailController = new TextEditingController();
+  TextEditingController passController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final logo = Hero(
@@ -26,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.emailAddress,
       autofocus: false,
       initialValue: '',
+      controller: emailController,
       decoration: InputDecoration(
         hintText: 'Email',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -36,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     final password = TextFormField(
       autofocus: false,
       initialValue: '',
+      controller: passController,
       obscureText: true,
       decoration: InputDecoration(
         hintText: 'Password',
@@ -48,6 +56,11 @@ class _LoginPageState extends State<LoginPage> {
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
         onPressed: () async {
+          var email = emailController.text;
+          var password = passController.text;
+
+          // ---- HTTP REQUEST GOES HERE ----
+
           // Obtain a list of the available cameras on the device.
           final cameras = await availableCameras();
 
