@@ -66,6 +66,10 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     super.dispose();
   }
 
+  String imageToBase64(XFile image){
+    return image.path;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,7 +102,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             // Attempt to take a picture and get the file `image`
             // where it was saved.
             final image = await _controller.takePicture();
-
+            debugPrint(imageToBase64(image));
             // If the picture was taken, display it on a new screen.
             Navigator.push(
               context,
