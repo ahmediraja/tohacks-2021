@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>animated background with pure css and html</title>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+	<link href="style.css" rel="stylesheet">
+	<link href="login.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<!-- <script defer src="./test.js" type="text/javascript"></script> -->
+
+
+	<style>
+		/* https://stackoverflow.com/a/29344677/12637867 */
+		.tab { display: none; }
+		.tab-default { display: block; }
+		:target ~ .tab-default { display:none; }
+		#register:target ~ .tab1,
+		#login:target ~ .tab2 {
+			display: block;
+		}
+		.anchor {
+			position: absolute;
+			top: -99999px;
+		}
+	</style>
+</head>
+<body>
+	<div>
+
+		<div class="box">
+			<a class="anchor" id="register"></a>
+			<a class="anchor" id="login"></a>
+			<form class="tab tab1 tab-default box-register" id="registerForm" method="post">
+				<h2>Register</h2>
+				<span class="box-input"><input class="input-element" id="registerEmail" type="text" name="Email" placeholder="Email" autocomplete="off"></input></span>
+				<span class="box-input"><input class="input-element" id="registerPassword" type="password" name="Password" placeholder="Password" autocomplete="off"></input></span>
+				<span class="box-input"><input class="input-element" id="registerConfirmPassword" type="password" name="Confirm Password" placeholder="Confirm Password" autocomplete="off"></input></span>
+				<input class="submit-button" id="submitRegister" type="submit" value="Register">
+				<a class="swap-button" href="#login">Log In instead</a>
+			</form>
+			<form class="tab tab2 box-register" id="loginForm" method="post">
+				<h2>Log in</h2>
+				<span class="box-input"><input class="input-element" id="loginEmail" type="text" placeholder="Username" autocomplete="off"></input></span>
+				<span class="box-input"><input class="input-element" id="loginPassword" type="password" placeholder="Password" autocomplete="off"></input></span>
+				<input class="submit-button" id="submitLogin" type="submit" value="Log In">
+				<a class="swap-button" href="#register">Register instead</a>
+			</form>
+		</div>
+
+		<script type="text/javascript">
+			let boxInputs = document.querySelectorAll(".input-element")
+			let clearInputs = () => {
+				for (let input of boxInputs)
+					input.value = ""
+			}
+
+			let swapButtons = document.querySelectorAll(".swap-button")
+			for (let button of swapButtons)
+				button.addEventListener("click", clearInputs)
+		</script>
+
+		<script type="text/javascript">
+			let submitLogin = document.getElementById("submitLogin")
+			let loginEmail = document.getElementById("loginEmail")
+			let loginPassword = document.getElementById("loginPassword")
+			submitLogin.addEventListener('click', (e) => {
+				e.preventDefault()
+				axios.post("https://to-hacks2021.herokuapp.com/api/users", {
+					email: registerEmail.value,
+					password: registerPassword.value
+				})
+				.then(console.log)
+				.catch(console.error)
+			})
+
+			let submitRegister = document.getElementById("submitRegister")
+			let registerEmail = document.getElementById("registerEmail")
+			let registerPassword = document.getElementById("registerPassword")
+			let registerConfirmPassword = document.getElementById("registerConfirmPassword")
+			submitRegister.addEventListener('click', (e) => {
+				e.preventDefault()
+				axios.post("https://to-hacks2021.herokuapp.com/api/users", {
+					email: registerEmail.value,
+					password: registerPassword.value,
+					password2: registerConfirmPassword.value
+				})
+				.then(res => {
+					console.log(res)
+				})
+				.catch(err => {
+					// alert(err.data)
+					console.error(err)
+					if (err.email) {
+						alert(err.email)
+					} else if(err.password) {
+						alert(err.password)
+					} else if(err.password2) {
+						alert(err.password2)
+					}
+				})
+			})
+		</script>
+	</div>
+
+	<div class="animation-area">
+		<ul class="box-area">
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+			<li></li>
+		</ul>
+	</div>
+</body>
+</html>
