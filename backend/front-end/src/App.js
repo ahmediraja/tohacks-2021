@@ -122,7 +122,7 @@ function App() {
     console.log(loginValues.password);
     axios
       .post(
-        `/api/${loginForm ? "auth" : "users"}`,
+        `https://to-hacks2021.herokuapp.com/api/${loginForm ? "auth" : "users"}`,
         loginForm
           ? {
               email: loginValues.email,

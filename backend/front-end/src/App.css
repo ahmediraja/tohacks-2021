@@ -9,12 +9,16 @@
 }
 
 .dashboard {
-  color: var(--col-text);
+  color: black;
   width: 100%;
   height: 100vh;
   padding: 3em;
   z-index: 0;
   max-width: 200vh;
+}
+
+.dashboard p {
+    padding: 1em 0;
 }
 
 .dashboard ul {
@@ -33,8 +37,9 @@
   padding: 0.5em;
 }
 .dashboard li a {
-  text-decoration: none;
-  color: var(--col-text);
+    text-decoration: none;
+    /*color: var(--col-text);*/
+    color: black;
 }
 
 .dashboard li::after {
@@ -58,8 +63,10 @@
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  /* border: .25em solid #ffffff11; */
-  /* border-radius: 1em; */
+  overflow-y: scroll;
+  border: 1em solid black;
+  background: #ffffffaa;
+  border-radius: 1em;
   text-align: center;
 }
 
