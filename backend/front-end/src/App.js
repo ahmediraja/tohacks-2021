@@ -16,19 +16,10 @@ function App() {
   const [user, setUser] = useState({ email: "", id: "" });
   const [loading, setLoading] = useState(true);
   const [socketConnected, setSocketConnected] = useState(false);
-  const [image, setImage] = useState("https://i.imgur.com/sohWhy9.jpg");
+  const [images, setImages] = useState(["https://i.imgur.com/sohWhy9.jpg"]);
 
   // Auth
   const checkToken = async (decoded) => {
-    // await store.dispatch(setCurrentUser(decoded));
-    // const currentTime = Date.now() / 1000;
-    // if (decoded.exp < currentTime) {
-    //   store.dispatch(logoutUser());
-    //   store.dispatch(clearProfile());
-
-    //   Router.push("/login");
-    // }
-    // store.dispatch({ type: LOADING_DONE });
     setValidUser(true);
     setLoginForm(false);
     setUser(decoded);
@@ -82,6 +73,7 @@ function App() {
   }
 
   socket.once("imageFromServer", (data) => {
+    console.log("hey");
     if (data.image.split(",")[1] !== undefined) {
       data.image = data.image.split(",")[1];
     }
@@ -89,7 +81,12 @@ function App() {
     let reader = new FileReader();
     reader.addEventListener("loadend", () => {
       let contents = reader.result;
-      setImage(contents);
+      if (images[0] === "https://i.imgur.com/sohWhy9.jpg") {
+        setImages([contents]);
+      } else {
+        console.log("hi");
+        setImages([...images, contents]);
+      }
     });
     if (blob instanceof Blob) reader.readAsDataURL(blob);
   });
@@ -106,8 +103,23 @@ function App() {
       : setRegisterValues({ ...registerValues, [e.target.name]: e.target.value });
   };
 
+  const onDownload = () => {
+    // unused for now
+    // console.log("dl")
+  };
+
+  const onCopy = () => {};
+
+  const onLogout = () => {
+    setAuthToken();
+    setLoginForm(true);
+    setValidUser(false);
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
+    console.log(loginValues.email);
+    console.log(loginValues.password);
     axios
       .post(
         `/api/${loginForm ? "auth" : "users"}`,
@@ -168,10 +180,10 @@ function App() {
   return (
     <>
       <div>
-        <div className="box">
-          <a className="anchor" id="register"></a>
-          <a className="anchor" id="login"></a>
-          {loginForm ? (
+        {loginForm ? (
+          <div className="box">
+            <a className="anchor" id="register"></a>
+            <a className="anchor" id="login"></a>
             <form className="tab tab1 tab-default box-register" id="loginForm">
               <h2>Log in</h2>
               <span className="box-input">
@@ -181,7 +193,7 @@ function App() {
                   value={loginValues.email}
                   name="email"
                   type="text"
-                  placeholder="email"
+                  placeholder="Email"
                   autocomplete="off"
                 />
               </span>
@@ -192,7 +204,7 @@ function App() {
                   type="password"
                   onChange={onChange}
                   value={loginValues.password}
-                  placeholder="password"
+                  placeholder="Password"
                   name="password"
                   autocomplete="off"
                 />
@@ -206,7 +218,9 @@ function App() {
                 Register instead
               </a>
             </form>
-          ) : !validUser ? (
+          </div>
+        ) : !validUser ? (
+          <div className="box">
             <form className="tab tab1 tab-default box-register">
               <h2>Register</h2>
               <span className="box-input">
@@ -252,33 +266,47 @@ function App() {
                 Log In instead
               </a>
             </form>
-          ) : (
-            <div class="dashboard">
-              <ul>
+          </div>
+        ) : (
+          <div class="dashboard">
+            {/*<ul>
                 <li>
                   <a href="#">Settings</a>
                 </li>
                 <li>
                   <a href="#">Log out</a>
                 </li>
-              </ul>
-              <div class="content">
-                <p>Take an image on your mobile device, then wait for it here!</p>
-                <div class="img-holder">
-                  <img class="img" src={image} alt="" />
+              </ul>*/}
+            <div class="content">
+              <p>Take an image on your mobile device, then wait for it here!</p>
+              {images.map((img) => (
+                <div>
+                  <div class="img-holder">
+                    <img class="img" src={img} alt="" />
+                  </div>
+                  <ul class="options">
+                    <li>
+                      <a href={img} target="_blank" download>
+                        Download
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" onClick={onCopy}>
+                        Copy to Clipboard
+                      </a>
+                    </li>
+                  </ul>{" "}
                 </div>
-                <ul class="options">
-                  <li>
-                    <a href="#">Download</a>
-                  </li>
-                  <li>
-                    <a href="#">Copy to Clipboard</a>
-                  </li>
-                </ul>
-              </div>
+              ))}
+
+              <span>
+                <a href="#" onClick={onLogout}>
+                  Log out
+                </a>
+              </span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
       <div className="animation-area">
         <ul className="box-area">

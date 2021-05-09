@@ -2,16 +2,14 @@
 
 :root {
   --col-text: black !important;
-  width: 50%;
   margin: 0 auto;
 }
-
 .dashboard {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 3em;
-  background-color: #ffffffaa;
   z-index: 0;
+  max-width: 200vh;
 }
 
 .dashboard ul {
@@ -54,23 +52,28 @@
 .content {
   width: 100%;
   height: 100%;
+  overflow-y: scroll;
   /* border: .25em solid #ffffff11; */
   /* border-radius: 1em; */
   text-align: center;
 }
 
 .img-holder {
-  width: 40%;
+  /*    max-height: 75%;*/
+  /*    overflow: hidden;*/
   margin: 0 auto;
-  /* height: 0%; */
-  /* overflow: hidden; */
-  /* object-fit: cover; */
 }
 
-.img-holder img {
+.img {
+  /*    width: 100%;
+  height: 100%;*/
   padding: 0;
   margin: 0;
-  width: 100%;
+  /*    width: 100%;
+  height: 100%;*/
+  width: 75%;
+  height: 60vh;
+  object-fit: contain;
 }
 
 .options {
@@ -228,6 +231,7 @@
 }
 
 /* possible take out */
+
 :root {
   --col-primary1: #57b4d1;
   --col-primary2: #2196f3;
@@ -251,63 +255,59 @@ body {
   justify-content: center;
 }
 
-.main {
-  color: var(--col-text);
-  text-align: center;
+/*.main {
+color: var(--col-text);
+text-align: center;
 }
-
 nav ul {
-  padding-right: 15px;
-  min-width: calc(100vw - 15px);
-  padding: 25px 0;
-  text-align: right;
+padding-right: 15px;
+min-width: calc(100vw - 15px);
+padding: 25px 0;
+text-align: right;
 }
-
 .main-text ul li {
-  display: inline-block;
-  text-transform: uppercase;
-  font-size: 20px;
-  padding: 0 10px;
+display: inline-block;
+text-transform: uppercase;
+font-size: 20px;
+padding: 0 10px;
 }
+.main-text a {
+color: inherit;
+position: relative;
+border: 0.2em solid var(--col-secondary);
+border-radius: 0.5em;
+padding: 0.5em 2em;
+}
+.main-text a::after {
+content: "";
+position: absolute;
+top: 0;
+bottom: 0;
+left: 50%;
+transform: translateX(-50%);
+width: 0%;
+background-color: var(--col-secondary);
+transition: 0.2s ease;
+z-index: -1;
+}
+.main-text a:hover::after {
+width: calc(100% + 1px);
+}
+.main-text p {
+padding: 0 0 10px 15px;
+}
+.main-text {
+margin: 0 15%;
+text-align: center;
+}
+.main h2 {
+font-size: 50px;
+}
+*/
+
 a {
   display: inline-block;
   text-decoration: none;
-}
-.main-text a {
-  color: inherit;
-  position: relative;
-  border: 0.2em solid var(--col-secondary);
-  border-radius: 0.5em;
-  padding: 0.5em 2em;
-}
-
-.main-text a::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0%;
-  background-color: var(--col-secondary);
-  transition: 0.2s ease;
-  z-index: -1;
-}
-
-.main-text a:hover::after {
-  width: calc(100% + 1px);
-}
-
-.main-text p {
-  padding: 0 0 10px 15px;
-}
-
-.main-text {
-  margin: 0 15%;
-  text-align: center;
-}
-.main h2 {
-  font-size: 50px;
 }
 
 .animation-area {
