@@ -107,9 +107,11 @@ function App() {
 
   const onSubmit = (e) => {
     e.preventDefault();
+	console.log(loginValues.email)
+	console.log(loginValues.password)
     axios
       .post(
-        `http://localhost:5000/api/${loginForm ? "auth" : "users"}`,
+        `https://to-hacks2021.herokuapp.com/api/${loginForm ? "auth" : "users"}`,
         loginForm
           ? {
               email: loginValues.email,
@@ -167,10 +169,10 @@ function App() {
   return (
     <>
       <div>
+        {loginForm ? (
         <div className="box">
           <a className="anchor" id="register"></a>
           <a className="anchor" id="login"></a>
-          {loginForm ? (
             <form className="tab tab1 tab-default box-register" id="loginForm">
               <h2>Log in</h2>
               <span className="box-input">
@@ -180,7 +182,7 @@ function App() {
                   value={loginValues.email}
                   name="email"
                   type="text"
-                  placeholder="email"
+                  placeholder="Email"
                   autocomplete="off"
                 />
               </span>
@@ -191,7 +193,7 @@ function App() {
                   type="password"
                   onChange={onChange}
                   value={loginValues.password}
-                  placeholder="password"
+                  placeholder="Password"
                   name="password"
                   autocomplete="off"
                 />
@@ -205,7 +207,9 @@ function App() {
                 Register instead
               </a>
             </form>
+		</div>
           ) : !validUser ? (
+        <div className="box">
             <form className="tab tab1 tab-default box-register">
               <h2>Register</h2>
               <span className="box-input">
@@ -251,22 +255,23 @@ function App() {
                 Log In instead
               </a>
             </form>
+		</div>
           ) : (
             <div class="dashboard">
-              <ul>
+              {/*<ul>
                 <li>
                   <a href="#">Settings</a>
                 </li>
                 <li>
                   <a href="#">Log out</a>
                 </li>
-              </ul>
+              </ul>*/}
               <div class="content">
                 <p>Take an image on your mobile device, then wait for it here!</p>
                 <div class="img-holder">
                   {console.log("hey")}
                   {console.log(image)}
-                  <img class="img" src={image} alt="" />
+                  <img class="img" src="https://source.unsplash.com/300x800" alt="" />
                 </div>
                 <ul class="options">
                   <li>
@@ -275,11 +280,13 @@ function App() {
                   <li>
                     <a href="#">Copy to Clipboard</a>
                   </li>
+                  <li>
+                    <a href="#">Log out</a>
+                  </li>
                 </ul>
               </div>
             </div>
           )}
-        </div>
       </div>
       <div className="animation-area">
         <ul className="box-area">

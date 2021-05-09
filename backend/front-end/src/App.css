@@ -1,17 +1,15 @@
 /* App Css */
 
 :root {
-  --col-text: black !important;
-  width: 50%;
-  margin: 0 auto;
+    --col-text: black !important;
+    margin: 0 auto;
 }
-
 .dashboard {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 3em;
-  background-color: #ffffffaa;
   z-index: 0;
+  max-width: 200vh;
 }
 
 .dashboard ul {
@@ -60,17 +58,21 @@
 }
 
 .img-holder {
-  width: 40%;
-  margin: 0 auto;
-  /* height: 0%; */
-  /* overflow: hidden; */
-  /* object-fit: cover; */
+    /*    max-height: 75%;*/
+    /*    overflow: hidden;*/
+    margin: 0 auto;
 }
 
-.img-holder img {
-  padding: 0;
-  margin: 0;
-  width: 100%;
+.img {
+    /*    width: 100%;
+    height: 100%;*/
+    padding: 0;
+    margin: 0;
+/*    width: 100%;
+    height: 100%;*/
+    width: 75%;
+    height: 60vh;
+    object-fit: contain;
 }
 
 .options {
@@ -228,6 +230,7 @@
 }
 
 /* possible take out */
+
 :root {
   --col-primary1: #57b4d1;
   --col-primary2: #2196f3;
@@ -251,7 +254,7 @@ body {
   justify-content: center;
 }
 
-.main {
+/*.main {
   color: var(--col-text);
   text-align: center;
 }
@@ -268,10 +271,6 @@ nav ul {
   text-transform: uppercase;
   font-size: 20px;
   padding: 0 10px;
-}
-a {
-  display: inline-block;
-  text-decoration: none;
 }
 .main-text a {
   color: inherit;
@@ -308,6 +307,12 @@ a {
 }
 .main h2 {
   font-size: 50px;
+}
+*/
+
+a {
+    display: inline-block;
+    text-decoration: none;
 }
 
 .animation-area {
