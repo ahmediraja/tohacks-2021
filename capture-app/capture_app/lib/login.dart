@@ -61,8 +61,8 @@ class _LoginPageState extends State<LoginPage> {
           String password = passController.text;
         
           // Send the LOGIN request
-          http.post(
-            Uri.https('google.com', ''),
+          final response = await http.post(
+            Uri.https('to-hacks2021.herokuapp.com', '/api/auth'),
              headers: <String, String>{
               'Content-Type': 'application/json; charset=UTF-8',
             },
@@ -71,6 +71,8 @@ class _LoginPageState extends State<LoginPage> {
               'password': password
             })
           );
+          log(response.body);
+
           // After the request is sent, we must wait for the response to validate the info and let us in
 
           // Obtain a list of the available cameras on the device.

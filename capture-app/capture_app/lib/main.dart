@@ -164,14 +164,13 @@ class DisplayPictureScreen extends StatelessWidget {
             String base64Image = imageToBase64(File(imagePath));
             String email = this.email;
             String password = this.password;
-            log(email);
-            log(password);
 
             // Send the request containing the IMAGE
             http.post(
-              Uri.https('google.com', ''),
+              Uri.https('to-hacks2021.herokuapp.com', '/api/img'),
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
+                'x-auth-token': '' // TODO Should be the token from shared prefs
               },
               body: jsonEncode(<String, String> {
                 'image': base64Image
