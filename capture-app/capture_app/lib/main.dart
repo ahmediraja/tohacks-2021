@@ -123,9 +123,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                       MaterialPageRoute(builder: (context) => LoginPage()));
                     }
                     
-                  }
+                  },
                 )
-              ]),
+              ],
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
               automaticallyImplyLeading: false),
               
           // Wait until the controller is initialized before displaying the
