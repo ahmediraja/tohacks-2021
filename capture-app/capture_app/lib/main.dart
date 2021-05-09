@@ -25,10 +25,27 @@ Future<void> main() async {
   // Get a specific camera from the list of available cameras.
   final firstCamera = cameras.first;
 
+  final loadedPrefs = await SharedPreferences.getInstance();
+  final String email = loadedPrefs.getString('email');
+  final String password = loadedPrefs.getString('password');
+
+  // Try to log in automatically
+  final response = await sendLoginRequest(email, password);
+  // After the request is sent, we must wait for the response to validate the info and let us in
+  final resBody = jsonDecode(response.body);
+  bool loginFailed = false;
+
+  if (resBody['token'] != null) { // Persistent login successful
+    log(resBody['token']);
+  } else { // Persistent login failed
+    loginFailed = true;
+  }
+
+
   runApp(
     MaterialApp(
       theme: ThemeData.dark(),
-      home: LoginPage(),
+      home: loginFailed ? LoginPage() : TakePictureScreen(camera: firstCamera, email: email, password: password),
       // home: TakePictureScreen(
       //   // Pass the appropriate camera to the TakePictureScreen widget.
       //   camera: firstCamera,
