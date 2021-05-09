@@ -271,7 +271,7 @@ function App() {
                 <div class="img-holder">
                   {console.log("hey")}
                   {console.log(image)}
-                  <img class="img" src="https://source.unsplash.com/300x800" alt="" />
+                  <img class="img" src={image} alt="" />
                 </div>
                 <ul class="options">
                   <li>
