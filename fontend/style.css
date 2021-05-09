@@ -44,7 +44,7 @@ a {
 .main-text a {
 	color: inherit;
 	position: relative;
-	border: .2em solid var(--col-secondary);
+	/* border: .2em solid var(--col-secondary); */
 	border-radius: .5em;
 	padding: .5em 2em;
 }

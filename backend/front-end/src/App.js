@@ -139,6 +139,10 @@ function App() {
     setValidUser(false);
   };
 
+  const onClear = () => {
+	setImages(["https://i.imgur.com/sohWhy9.jpg"])
+  }
+
   const onSubmit = (e) => {
     e.preventDefault();
     axios
@@ -290,14 +294,15 @@ function App() {
           </div>
         ) : (
           <div class="dashboard">
-            {/*<ul>
+            <ul>
                 <li>
-                  <a href="#">Settings</a>
+                  <a href="#" onClick={onClear}>Clear</a>
                 </li>
+				
                 <li>
-                  <a href="#">Log out</a>
+                  <a href="#" onClick={onLogout}>Log out</a>
                 </li>
-              </ul>*/}
+              </ul>
             <div class="content">
               <p>Take an image on your mobile device, then wait for it here!</p>
               {images.map((img, index) => (
@@ -323,11 +328,6 @@ function App() {
                 </div>
               ))}
 
-              <span>
-                <a href="#" onClick={onLogout}>
-                  Log out
-                </a>
-              </span>
             </div>
           </div>
         )}
