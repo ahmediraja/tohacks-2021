@@ -91,7 +91,9 @@ Future<void> main() async {
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
 
-  const TakePictureScreen({Key key, @required this.camera}) : super(key: key);
+  const TakePictureScreen(
+      {Key key, @required this.camera, String email, String password})
+      : super(key: key);
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
