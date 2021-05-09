@@ -104,6 +104,22 @@ function App() {
       ? setLoginValues({ ...loginValues, [e.target.name]: e.target.value })
       : setRegisterValues({ ...registerValues, [e.target.name]: e.target.value });
   };
+  
+  const onDownload = () => {
+	// unused for now
+	// console.log("dl")
+  }
+
+  const onCopy = () => {
+	// TODO
+	console.log(image)
+	console.log("copy")
+  }
+
+  const onLogout = () => {
+	setAuthToken()
+	window.location.reload();
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -275,13 +291,13 @@ function App() {
                 </div>
                 <ul class="options">
                   <li>
-                    <a href="#">Download</a>
+                    <a href={image} target="_blank" download>Download</a>
                   </li>
                   <li>
-                    <a href="#">Copy to Clipboard</a>
+                    <a href="#" onClick={onCopy}>Copy to Clipboard</a>
                   </li>
                   <li>
-                    <a href="#">Log out</a>
+                    <a href="#" onClick={onLogout}>Log out</a>
                   </li>
                 </ul>
               </div>
