@@ -1,10 +1,15 @@
 /* App Css */
 
 :root {
-  --col-text: black !important;
-  margin: 0 auto;
+    margin: 0 auto;
+    --col-primary1: #57b4d1;
+    --col-primary2: #2196f3;
+    --col-secondary: #3a3644;
+    --col-text: #eee;
 }
+
 .dashboard {
+  color: var(--col-text);
   width: 100%;
   height: 100vh;
   padding: 3em;
@@ -52,7 +57,7 @@
 .content {
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   /* border: .25em solid #ffffff11; */
   /* border-radius: 1em; */
   text-align: center;
@@ -232,12 +237,6 @@
 
 /* possible take out */
 
-:root {
-  --col-primary1: #57b4d1;
-  --col-primary2: #2196f3;
-  --col-secondary: #3a3644;
-  --col-text: #eee;
-}
 
 *,
 *:before,

@@ -122,7 +122,7 @@ function App() {
     console.log(loginValues.password);
     axios
       .post(
-        `/api/${loginForm ? "auth" : "users"}`,
+        `https://to-hacks2021.herokuapp.com/api/${loginForm ? "auth" : "users"}`,
         loginForm
           ? {
               email: loginValues.email,
@@ -269,14 +269,11 @@ function App() {
           </div>
         ) : (
           <div class="dashboard">
-            {/*<ul>
+            <ul>
                 <li>
-                  <a href="#">Settings</a>
+                  <a href="#" onClick={onLogout}>Log out</a>
                 </li>
-                <li>
-                  <a href="#">Log out</a>
-                </li>
-              </ul>*/}
+              </ul>
             <div class="content">
               <p>Take an image on your mobile device, then wait for it here!</p>
               {images.map((img) => (
@@ -299,11 +296,6 @@ function App() {
                 </div>
               ))}
 
-              <span>
-                <a href="#" onClick={onLogout}>
-                  Log out
-                </a>
-              </span>
             </div>
           </div>
         )}
