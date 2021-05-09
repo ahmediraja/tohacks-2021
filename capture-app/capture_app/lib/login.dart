@@ -11,7 +11,7 @@ import 'main.dart';
 Future<http.Response> sendLoginRequest(String email, String password) async {
     // Send the LOGIN request
   final response = await http.post(
-      Uri.https('to-hacks2021.herokuapp.com', '/api/auth'),
+      Uri.https('momentsnap.herokuapp.com', '/api/auth'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

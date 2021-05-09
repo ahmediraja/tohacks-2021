@@ -187,7 +187,7 @@ class DisplayPictureScreen extends StatelessWidget {
 
             // Send the request containing the IMAGE
             final response = await http.post(
-                Uri.https('to-hacks2021.herokuapp.com', '/api/img'),
+                Uri.https('momentsnap.herokuapp.com', '/api/img'),
                 headers: <String, String>{
                   'Content-Type': 'application/json; charset=UTF-8',
                   'x-auth-token': token,
