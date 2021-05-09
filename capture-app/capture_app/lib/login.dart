@@ -11,7 +11,7 @@ import 'main.dart';
 Future<http.Response> sendLoginRequest(String email, String password) async {
     // Send the LOGIN request
   final response = await http.post(
-      Uri.https('to-hacks2021.herokuapp.com', '/api/auth'),
+      Uri.https('momentsnap.herokuapp.com', '/api/auth'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -42,7 +42,6 @@ class _LoginPageState extends State<LoginPage> {
   String token;
 
   _LoginPageState();
-
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +97,7 @@ class _LoginPageState extends State<LoginPage> {
           if (resBody['token'] != null){ // if a token was given, there was no error, so continue
             log(resBody['token']);
             final prefs = await SharedPreferences.getInstance();
-            prefs.setString('email', email);
-            prefs.setString('password', password);
+            prefs.setString('token', resBody['token']);
 
             // Obtain a list of the available cameras on the device.
             final cameras = await availableCameras();
@@ -114,8 +112,6 @@ class _LoginPageState extends State<LoginPage> {
                 builder: (context) => TakePictureScreen(
                   // Pass the automatically generated path to
                   // the DisplayPictureScreen widget.
-                  email: email,
-                  password: password,
                   camera: firstCamera,
                 ),
               ),

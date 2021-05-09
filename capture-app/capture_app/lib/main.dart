@@ -90,15 +90,8 @@ Future<void> main() async {
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
-  final String email;
-  final String password;
 
-  const TakePictureScreen(
-      {Key key,
-      @required this.camera,
-      @required this.email,
-      @required this.password})
-      : super(key: key);
+  const TakePictureScreen({Key key, @required this.camera}) : super(key: key);
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -229,8 +222,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     builder: (context) => DisplayPictureScreen(
                       // Pass the automatically generated path to
                       // the DisplayPictureScreen widget.
-                      email: widget.email,
-                      password: widget.password,
                       imagePath: image?.path,
                     ),
                   ),
@@ -250,12 +241,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
-  final String email;
-  final String password;
 
-  const DisplayPictureScreen(
-      {Key key, this.imagePath, this.email, this.password})
-      : super(key: key);
+  const DisplayPictureScreen({Key key, this.imagePath}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -269,20 +256,16 @@ class DisplayPictureScreen extends StatelessWidget {
         onPressed: () async {
           try {
             String base64Image = imageToBase64(File(imagePath));
-            String email = this.email;
-            String password = this.password;
 
             final prefs = await SharedPreferences.getInstance();
             // read data from token key. If it doesn't exist, return "no token found"
             final token = prefs.getString('token') ?? "No token found";
 
-            log(email);
-            log(password);
             log(token);
 
             // Send the request containing the IMAGE
             final response = await http.post(
-                Uri.https('to-hacks2021.herokuapp.com', '/api/img'),
+                Uri.https('momentsnap.herokuapp.com', '/api/img'),
                 headers: <String, String>{
                   'Content-Type': 'application/json; charset=UTF-8',
                   'x-auth-token': token,
