@@ -7,6 +7,9 @@
     --col-secondary: #3a3644;
     --col-text: #eee;
 }
+body {
+    font-family: 'Farro', sans-serif !important;
+}
 
 .dashboard {
   color: black;
