@@ -6,13 +6,25 @@ import 'dart:convert';
 import 'package:camera/camera.dart';
 import 'package:capture_app/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:native_device_orientation/native_device_orientation.dart';
 
 String imageToBase64(File imageFile) {
   List<int> imageBytes = imageFile.readAsBytesSync();
   return base64Encode(imageBytes);
 }
+
+// Future<NativeDeviceOrientation> deviceOrientation() async {
+//   NativeDeviceOrientationCommunicator ndo;
+//   var orientation = await ndo.orientation(useSensor: false);
+//   // print(orientation);
+//   return (orientation);
+//   // setState(() {
+//   //   someVal = result;
+//   // })
+// }
 
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
@@ -35,23 +47,44 @@ Future<void> main() async {
   final resBody = jsonDecode(response.body);
   bool loginFailed = false;
 
-  if (resBody['token'] != null) { // Persistent login successful
+  if (resBody['token'] != null) {
+    // Persistent login successful
     log(resBody['token']);
-  } else { // Persistent login failed
+  } else {
+    // Persistent login failed
     loginFailed = true;
   }
 
-
-  runApp(
-    MaterialApp(
-      theme: ThemeData.dark(),
-      home: loginFailed ? LoginPage() : TakePictureScreen(camera: firstCamera, email: email, password: password),
-      // home: TakePictureScreen(
-      //   // Pass the appropriate camera to the TakePictureScreen widget.
-      //   camera: firstCamera,
-      // ),
-    ),
-  );
+  // Ensure portraitUp orientation
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(
+      MaterialApp(
+        theme: ThemeData.dark(),
+        home: loginFailed
+            ? LoginPage()
+            : TakePictureScreen(
+                camera: firstCamera, email: email, password: password),
+        // home: TakePictureScreen(
+        //   // Pass the appropriate camera to the TakePictureScreen widget.
+        //   camera: firstCamera,
+        // ),
+      ),
+    );
+  });
+  // runApp(
+  //   MaterialApp(
+  //     theme: ThemeData.dark(),
+  //     home: loginFailed
+  //         ? LoginPage()
+  //         : TakePictureScreen(
+  //             camera: firstCamera, email: email, password: password),
+  //     // home: TakePictureScreen(
+  //     //   // Pass the appropriate camera to the TakePictureScreen widget.
+  //     //   camera: firstCamera,
+  //     // ),
+  //   ),
+  // );
 }
 
 // A screen that allows users to take a picture using a given camera.
@@ -106,30 +139,33 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-              title: Row(children: [
-                Text('Take a picture'),
-                IconButton(
-                  icon: Icon(Icons.logout), 
-                  onPressed: () async { // Log out
-                    // Reset stored credentials
-                    final prefs = await SharedPreferences.getInstance();
-                    prefs.setString('email', '');
-                    prefs.setString('password', '');
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
-                    } else {
-                      Navigator.pop(context);
-                      Navigator.push(context, 
-                      MaterialPageRoute(builder: (context) => LoginPage()));
-                    }
-                    
-                  },
-                )
-              ],
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              title: Row(
+                children: [
+                  Text('Take a picture'),
+                  IconButton(
+                    icon: Icon(Icons.logout),
+                    onPressed: () async {
+                      // Log out
+                      // Reset stored credentials
+                      final prefs = await SharedPreferences.getInstance();
+                      prefs.setString('email', '');
+                      prefs.setString('password', '');
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      } else {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()));
+                      }
+                    },
+                  )
+                ],
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
               ),
               automaticallyImplyLeading: false),
-              
+
           // Wait until the controller is initialized before displaying the
           // camera preview. Use a FutureBuilder to display a loading spinner
           // until the controller has finished initializing.
@@ -138,7 +174,36 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the Future is complete, display the preview.
-                return CameraPreview(_controller);
+                // return CameraPreview(_controller);
+                // NativeDeviceOrientationCommunicator ndo;
+                // // var orientation = await ndo.orientation(useSensor: false);
+                // Stream<NativeDeviceOrientation> orientation =
+                //     ndo.onOrientationChanged(useSensor: false);
+
+                // var orien = deviceOrientation();
+                final orientation =
+                    NativeDeviceOrientationReader.orientation(context);
+
+                int turns;
+                switch (orientation) {
+                  case NativeDeviceOrientation.landscapeLeft:
+                    turns = -1;
+                    break;
+                  case NativeDeviceOrientation.landscapeRight:
+                    turns = 1;
+                    break;
+                  case NativeDeviceOrientation.portraitDown:
+                    turns = 2;
+                    break;
+                  default:
+                    turns = 0;
+                    break;
+                }
+                return RotatedBox(
+                    quarterTurns: turns, child: CameraPreview(_controller));
+
+                // log("orientationListener broken");
+                // return Container(width: 0, height: 0);
               } else {
                 // Otherwise, display a loading indicator.
                 return Center(child: CircularProgressIndicator());
