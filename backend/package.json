@@ -1,0 +1,27 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "to hacks project backend",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.ts",
+    "start": "node app.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix front-end && npm run build --prefix front-end"
+  },
+  "author": "to hacks team",
+  "license": "ISC",
+  "homepage": "http://localhost:5000/",
+  "dependencies": {
+    "@google-cloud/vision": "^2.3.1",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.12.7",
+    "nodemon": "^2.0.7",
+    "passport": "^0.4.1",
+    "socket.io": "^4.0.2",
+    "validator": "^13.6.0"
+  }
+}
