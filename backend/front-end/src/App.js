@@ -4,8 +4,11 @@ import axios from "axios";
 import "./App.css";
 import io from "socket.io-client";
 import jwt_decode from "jwt-decode";
+import e from "cors";
 
-const socket = io("");
+const host = "http://localhost:5000";
+const socket = io(host);
+const img_link = "https://i.imgur.com/sohWhy9.jpg";
 
 function App() {
   const [loginValues, setLoginValues] = useState({ email: "", password: "" });
@@ -16,7 +19,9 @@ function App() {
   const [user, setUser] = useState({ email: "", id: "" });
   const [loading, setLoading] = useState(true);
   const [socketConnected, setSocketConnected] = useState(false);
-  const [images, setImages] = useState(["https://i.imgur.com/sohWhy9.jpg"]);
+  const [images, setImages] = useState([img_link]);
+  const [blobs, setBlobs] = useState([]);
+  const [blobChanged, setBlobChanged] = useState(false);
 
   // Auth
   const checkToken = async (decoded) => {
@@ -73,7 +78,7 @@ function App() {
   }
 
   socket.once("imageFromServer", (data) => {
-    console.log("hey");
+    setBlobChanged(false);
     if (data.image.split(",")[1] !== undefined) {
       data.image = data.image.split(",")[1];
     }
@@ -81,16 +86,14 @@ function App() {
     let reader = new FileReader();
     reader.addEventListener("loadend", () => {
       let contents = reader.result;
-      if (images[0] === "https://i.imgur.com/sohWhy9.jpg") {
+      if (images[0] === img_link) {
         setImages([contents]);
       } else {
-        console.log("hi");
         setImages([...images, contents]);
       }
     });
     if (blob instanceof Blob) reader.readAsDataURL(blob);
   });
-
   if (validUser && !socketConnected) {
     socket.emit("connected", user.id);
     setSocketConnected(true);
@@ -108,7 +111,27 @@ function App() {
     // console.log("dl")
   };
 
-  const onCopy = () => {};
+  const onCopy = (e) => {
+    try {
+      const index = parseInt(e.target.id);
+      let data = images[index];
+      console.log("yo");
+      console.log(index);
+      if (data.split(",")[1] !== undefined) {
+        data = data.split(",")[1];
+      }
+      console.log(data);
+      const { ClipboardItem } = window;
+      navigator.clipboard.write([
+        new ClipboardItem({
+          "image/png": base64toBlob(data, "image/png"),
+        }),
+      ]);
+    } catch (error) {
+      console.error(error);
+    }
+    console.log(images);
+  };
 
   const onLogout = () => {
     setAuthToken();
@@ -118,11 +141,9 @@ function App() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(loginValues.email);
-    console.log(loginValues.password);
     axios
       .post(
-        `/api/${loginForm ? "auth" : "users"}`,
+        `${host}/api/${loginForm ? "auth" : "users"}`,
         loginForm
           ? {
               email: loginValues.email,
@@ -279,23 +300,26 @@ function App() {
               </ul>*/}
             <div class="content">
               <p>Take an image on your mobile device, then wait for it here!</p>
-              {images.map((img) => (
+              {images.map((img, index) => (
                 <div>
                   <div class="img-holder">
                     <img class="img" src={img} alt="" />
                   </div>
-                  <ul class="options">
-                    <li>
-                      <a href={img} target="_blank" download>
-                        Download
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#" onClick={onCopy}>
-                        Copy to Clipboard
-                      </a>
-                    </li>
-                  </ul>{" "}
+
+                  {img === img_link ? null : (
+                    <ul class="options">
+                      <li>
+                        <a href={img} target="_blank" download>
+                          Download
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" id={index} onClick={onCopy}>
+                          Copy to Clipboard
+                        </a>
+                      </li>
+                    </ul>
+                  )}
                 </div>
               ))}
 
