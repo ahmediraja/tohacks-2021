@@ -7,6 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:capture_app/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 String imageToBase64(File imageFile) {
   List<int> imageBytes = imageFile.readAsBytesSync();
@@ -42,12 +43,12 @@ class TakePictureScreen extends StatefulWidget {
   final String email;
   final String password;
 
-  const TakePictureScreen({
-    Key key,
-    @required this.camera,
-    @required this.email,
-    @required this.password
-  }) : super(key: key);
+  const TakePictureScreen(
+      {Key key,
+      @required this.camera,
+      @required this.email,
+      @required this.password})
+      : super(key: key);
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -147,7 +148,9 @@ class DisplayPictureScreen extends StatelessWidget {
   final String email;
   final String password;
 
-  const DisplayPictureScreen({Key key, this.imagePath, this.email, this.password}) : super(key: key);
+  const DisplayPictureScreen(
+      {Key key, this.imagePath, this.email, this.password})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -160,23 +163,29 @@ class DisplayPictureScreen extends StatelessWidget {
         child: Icon(Icons.send),
         onPressed: () async {
           try {
-            
             String base64Image = imageToBase64(File(imagePath));
             String email = this.email;
             String password = this.password;
+
+            final prefs = await SharedPreferences.getInstance();
+            // read data from token key. If it doesn't exist, return "no token found"
+            final token = prefs.getString('token') ?? "No token found";
+
             log(email);
             log(password);
+            log(token);
 
             // Send the request containing the IMAGE
-            http.post(
-              Uri.https('google.com', ''),
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-              },
-              body: jsonEncode(<String, String> {
-                'image': base64Image
-              })
-            );
+            final response = await http.post(
+                Uri.https('to-hacks2021.herokuapp.com', '/api/img'),
+                headers: <String, String>{
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  'x-auth-token': token,
+                },
+                body: jsonEncode(<String, String>{'image': base64Image}));
+
+            log(response.body);
+
             // Obtain a list of the available cameras on the device.
             final cameras = await availableCameras();
 

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main.dart';
 
@@ -59,19 +60,24 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () async {
           String email = emailController.text;
           String password = passController.text;
-        
+
           // Send the LOGIN request
-          http.post(
-            Uri.https('google.com', ''),
-             headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: jsonEncode(<String, String> {
-              'email': email,
-              'password': password
-            })
-          );
+          final response = await http.post(
+              Uri.https('to-hacks2021.herokuapp.com', '/api/auth'),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(
+                  <String, String>{'email': email, 'password': password}));
           // After the request is sent, we must wait for the response to validate the info and let us in
+
+          log(response.body);
+
+          final prefs = await SharedPreferences.getInstance();
+          // final token = response.body.substring(10);
+          final len = response.body.length;
+          log(response.body.substring(10, len - 2));
+          prefs.setString('token', response.body.substring(10, len - 2));
 
           // Obtain a list of the available cameras on the device.
           final cameras = await availableCameras();
