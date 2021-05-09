@@ -34,7 +34,8 @@ module.exports = function (io) {
     // io.to(pickedUser).emit("taskRequest", req.body);
     // console.log(req.body.image);
     // sendResponse = function (data) {
-
+    console.log("hey");
+    console.log(req.user.id);
     io.to(req.user.id).emit("imageFromServer", {
       image: req.body.image,
     });

@@ -44,9 +44,14 @@ app.use("/api/users", users);
 
 //set static folder
 
+app.use(express.static(path.join(__dirname, "front-end", "home")));
 app.use(express.static(path.join(__dirname, "front-end", "build")));
 
 app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "front-end", "home", "index.html"));
+});
+
+app.get("/app", function (req, res) {
   res.sendFile(path.join(__dirname, "front-end", "build", "index.html"));
 });
 

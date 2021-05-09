@@ -5,8 +5,9 @@ import "./App.css";
 import io from "socket.io-client";
 import jwt_decode from "jwt-decode";
 import e from "cors";
+import { set } from "mongoose";
 
-const host = "http://localhost:5000";
+const host = "https://to-hacks2021.herokuapp.com";
 const socket = io(host);
 const img_link = "https://i.imgur.com/sohWhy9.jpg";
 
@@ -20,8 +21,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [socketConnected, setSocketConnected] = useState(false);
   const [images, setImages] = useState([img_link]);
-  const [blobs, setBlobs] = useState([]);
-  const [blobChanged, setBlobChanged] = useState(false);
 
   // Auth
   const checkToken = async (decoded) => {
@@ -78,7 +77,6 @@ function App() {
   }
 
   socket.once("imageFromServer", (data) => {
-    setBlobChanged(false);
     if (data.image.split(",")[1] !== undefined) {
       data.image = data.image.split(",")[1];
     }
@@ -89,7 +87,7 @@ function App() {
       if (images[0] === img_link) {
         setImages([contents]);
       } else {
-        setImages([...images, contents]);
+        setImages([contents, ...images]);
       }
     });
     if (blob instanceof Blob) reader.readAsDataURL(blob);
@@ -115,12 +113,9 @@ function App() {
     try {
       const index = parseInt(e.target.id);
       let data = images[index];
-      console.log("yo");
-      console.log(index);
       if (data.split(",")[1] !== undefined) {
         data = data.split(",")[1];
       }
-      console.log(data);
       const { ClipboardItem } = window;
       navigator.clipboard.write([
         new ClipboardItem({
@@ -130,18 +125,22 @@ function App() {
     } catch (error) {
       console.error(error);
     }
-    console.log(images);
   };
 
-  const onLogout = () => {
-    setAuthToken();
+  const onLogout = (e) => {
+    e.preventDefault();
+    console.log("hey");
+    setAuthToken(false);
     setLoginForm(true);
     setValidUser(false);
+    setUser({ id: null, email: null });
+    setSocketConnected(false);
+    setImages([img_link]);
   };
 
   const onClear = () => {
-	setImages(["https://i.imgur.com/sohWhy9.jpg"])
-  }
+    setImages([img_link]);
+  };
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -160,12 +159,19 @@ function App() {
             }
       )
       .then((res) => {
-        setValidUser(true);
-        setLoginForm(false);
-        const token = res.data.token;
-        setAuthToken(token);
-        const decoded = jwt_decode(token);
-        setUser(decoded.user);
+        if (loginForm) {
+          setValidUser(true);
+          setLoginForm(false);
+          const token = res.data.token;
+          setAuthToken(token);
+          const decoded = jwt_decode(token);
+          setUser(decoded.user);
+          setLoginValues({ email: "", password: "" });
+        } else {
+          setLoginForm(true);
+          setRegisterValues({ email: "", password: "", password2: "" });
+        }
+
         //do whatever you want here
       })
       .catch((err) => {
@@ -295,14 +301,18 @@ function App() {
         ) : (
           <div class="dashboard">
             <ul>
-                <li>
-                  <a href="#" onClick={onClear}>Clear</a>
-                </li>
-				
-                <li>
-                  <a href="#" onClick={onLogout}>Log out</a>
-                </li>
-              </ul>
+              <li>
+                <a href="#" onClick={onClear}>
+                  Clear
+                </a>
+              </li>
+
+              <li>
+                <a href="#" onClick={onLogout}>
+                  Log out
+                </a>
+              </li>
+            </ul>
             <div class="content">
               <p>Take an image on your mobile device, then wait for it here!</p>
               {images.map((img, index) => (
@@ -327,7 +337,6 @@ function App() {
                   )}
                 </div>
               ))}
-
             </div>
           </div>
         )}
