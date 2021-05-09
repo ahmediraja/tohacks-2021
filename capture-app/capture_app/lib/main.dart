@@ -106,7 +106,28 @@ class TakePictureScreenState extends State<TakePictureScreen> {
         },
         child: Scaffold(
           appBar: AppBar(
-              title: Text('Take a picture'), automaticallyImplyLeading: false),
+              title: Row(children: [
+                Text('Take a picture'),
+                IconButton(
+                  icon: Icon(Icons.logout), 
+                  onPressed: () async { // Log out
+                    // Reset stored credentials
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString('email', '');
+                    prefs.setString('password', '');
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    } else {
+                      Navigator.pop(context);
+                      Navigator.push(context, 
+                      MaterialPageRoute(builder: (context) => LoginPage()));
+                    }
+                    
+                  }
+                )
+              ]),
+              automaticallyImplyLeading: false),
+              
           // Wait until the controller is initialized before displaying the
           // camera preview. Use a FutureBuilder to display a loading spinner
           // until the controller has finished initializing.
@@ -209,18 +230,7 @@ class DisplayPictureScreen extends StatelessWidget {
             // Get a specific camera from the list of available cameras.
             final firstCamera = cameras.first;
             // If the picture was sent, go back to taking picture screen.
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TakePictureScreen(
-                  // Pass the automatically generated path to
-                  // the DisplayPictureScreen widget.
-                  camera: firstCamera,
-                  email: this.email,
-                  password: this.password,
-                ),
-              ),
-            );
+            Navigator.pop(context);
           } catch (e) {
             // If an error occurs, log the error to the console.
             print(e);
