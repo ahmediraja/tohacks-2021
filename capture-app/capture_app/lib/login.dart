@@ -17,9 +17,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passController = new TextEditingController();
+  bool _loginFailed = false;
 
   @override
   Widget build(BuildContext context) {
+
     final logo = Hero(
       tag: 'hero',
       child: CircleAvatar(
@@ -29,7 +31,6 @@ class _LoginPageState extends State<LoginPage> {
         child: Image.asset('assets/camera.png'),
       ),
     );
-
     final email = TextFormField(
       controller: emailController,
       keyboardType: TextInputType.emailAddress,
@@ -54,6 +55,9 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
+    // Error message which is only visible after failing to log in
+    final errorMessage = Text("Invalid email or password!", textAlign: TextAlign.center, style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold));
+
     final loginButton = Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
@@ -71,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                   <String, String>{'email': email, 'password': password}));
           // After the request is sent, we must wait for the response to validate the info and let us in
           final resBody = jsonDecode(response.body);
+
 
           if (resBody['token'] != null){ // if a token was given, there was no error, so continue
             log(resBody['token']);
@@ -96,6 +101,10 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             );
+          } else {
+            this.setState(() {
+              _loginFailed = true;
+            });
           }
         },
         style: ElevatedButton.styleFrom(
@@ -110,7 +119,6 @@ class _LoginPageState extends State<LoginPage> {
         child: Text('Log In', style: TextStyle(color: Colors.black)),
       ),
     );
-
     return Scaffold(
       backgroundColor: Colors.blue,
       body: Center(
@@ -124,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 8.0),
             password,
             SizedBox(height: 24.0),
+            if(_loginFailed) errorMessage,
             loginButton,
           ],
         ),
