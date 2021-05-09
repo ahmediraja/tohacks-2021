@@ -15,7 +15,10 @@ function App() {
   const [validUser, setValidUser] = useState(false);
   const [user, setUser] = useState({ email: "", id: "" });
   const [loading, setLoading] = useState(true);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [image, setImage] = useState("https://i.imgur.com/sohWhy9.jpg");
 
+  // Auth
   const checkToken = async (decoded) => {
     // await store.dispatch(setCurrentUser(decoded));
     // const currentTime = Date.now() / 1000;
@@ -46,15 +49,56 @@ function App() {
       setAuthToken(localStorage.token);
       const decoded = jwt_decode(localStorage.token);
       checkToken(decoded);
-      socket.emit("join", user.id);
+      setUser(decoded.user);
+      setValidUser(true);
     }
     setLoading(false);
     return () => {
-      // socket.emit('disconnect')
       socket.off("disconnect");
     };
   }, []);
 
+  // Socket
+
+  function base64toBlob(base64Data, contentType) {
+    contentType = contentType || "";
+    var sliceSize = 1024;
+    var byteCharacters = window.atob(base64Data);
+    var bytesLength = byteCharacters.length;
+    var slicesCount = Math.ceil(bytesLength / sliceSize);
+    var byteArrays = new Array(slicesCount);
+
+    for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+      var begin = sliceIndex * sliceSize;
+      var end = Math.min(begin + sliceSize, bytesLength);
+
+      var bytes = new Array(end - begin);
+      for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+        bytes[i] = byteCharacters[offset].charCodeAt(0);
+      }
+      byteArrays[sliceIndex] = new Uint8Array(bytes);
+    }
+    return new Blob(byteArrays, { type: contentType });
+  }
+
+  socket.once("imageFromServer", (data) => {
+    let blob = base64toBlob(data.image.split(",")[1], "image/png");
+    let reader = new FileReader();
+    reader.addEventListener("loadend", () => {
+      let contents = reader.result;
+      console.log("hi");
+      console.log(contents);
+      setImage(contents);
+    });
+    if (blob instanceof Blob) reader.readAsDataURL(blob);
+  });
+
+  if (validUser && !socketConnected) {
+    socket.emit("connected", user.id);
+    setSocketConnected(true);
+  }
+
+  // Inputs
   const onChange = (e) => {
     loginForm
       ? setLoginValues({ ...loginValues, [e.target.name]: e.target.value })
@@ -83,7 +127,7 @@ function App() {
         const token = res.data.token;
         setAuthToken(token);
         const decoded = jwt_decode(token);
-        setUser(decoded);
+        setUser(decoded.user);
         //do whatever you want here
       })
       .catch((err) => {
@@ -92,6 +136,7 @@ function App() {
         // display and handle errors here
       });
   };
+  // if loading
   if (loading)
     return (
       <div>
@@ -117,6 +162,8 @@ function App() {
         </div>
       </div>
     );
+
+  // convert from base64 to blob
   return (
     <>
       <div>
@@ -217,7 +264,9 @@ function App() {
               <div class="content">
                 <p>Take an image on your mobile device, then wait for it here!</p>
                 <div class="img-holder">
-                  <img src="https://source.unsplash.com/800x600" alt="" />
+                  {console.log("hey")}
+                  {console.log(image)}
+                  <img class="img" src={image} alt="" />
                 </div>
                 <ul class="options">
                   <li>
