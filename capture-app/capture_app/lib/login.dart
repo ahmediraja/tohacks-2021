@@ -25,8 +25,8 @@ class _LoginPageState extends State<LoginPage> {
       child: CircleAvatar(
         backgroundColor: Colors.transparent,
         radius: 48.0,
-        child: Icon(Icons.camera),
-        // child: Image.asset('assets/logo.png'),
+        // child: Icon(Icons.camera),
+        child: Image.asset('assets/camera.png'),
       ),
     );
 
