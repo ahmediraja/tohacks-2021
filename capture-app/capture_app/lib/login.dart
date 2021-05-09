@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -56,8 +57,9 @@ class _LoginPageState extends State<LoginPage> {
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
         onPressed: () async {
-          var email = emailController.text;
-          var password = passController.text;
+          String email = emailController.text;
+          String password = passController.text;
+        
 
           // ---- HTTP REQUEST GOES HERE ----
 
@@ -74,6 +76,8 @@ class _LoginPageState extends State<LoginPage> {
               builder: (context) => TakePictureScreen(
                 // Pass the automatically generated path to
                 // the DisplayPictureScreen widget.
+                email: email,
+                password: password,
                 camera: firstCamera,
               ),
             ),

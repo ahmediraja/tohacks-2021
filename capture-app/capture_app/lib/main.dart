@@ -8,6 +8,11 @@ import 'package:capture_app/login.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+String imageToBase64(File imageFile) {
+  List<int> imageBytes = imageFile.readAsBytesSync();
+  return base64Encode(imageBytes);
+}
+
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
   // can be called before `runApp()`
@@ -34,10 +39,14 @@ Future<void> main() async {
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
+  final String email;
+  final String password;
 
   const TakePictureScreen({
     Key key,
     @required this.camera,
+    @required this.email,
+    @required this.password
   }) : super(key: key);
 
   @override
@@ -69,11 +78,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
     // Dispose of the controller when the widget is disposed.
     _controller.dispose();
     super.dispose();
-  }
-
-  String imageToBase64(File imageFile) {
-    List<int> imageBytes = imageFile.readAsBytesSync();
-    return base64Encode(imageBytes);
   }
 
   @override
@@ -119,6 +123,8 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     builder: (context) => DisplayPictureScreen(
                       // Pass the automatically generated path to
                       // the DisplayPictureScreen widget.
+                      email: widget.email,
+                      password: widget.password,
                       imagePath: image?.path,
                     ),
                   ),
@@ -138,8 +144,10 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
+  final String email;
+  final String password;
 
-  const DisplayPictureScreen({Key key, this.imagePath}) : super(key: key);
+  const DisplayPictureScreen({Key key, this.imagePath, this.email, this.password}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +160,12 @@ class DisplayPictureScreen extends StatelessWidget {
         child: Icon(Icons.send),
         onPressed: () async {
           try {
+
+            String base64Image = imageToBase64(File(imagePath));
+            String email = this.email;
+            String password = this.password;
+            log(email);
+            log(password);
             // --------------------------
             // INSERT POST IMAGE CODE HERE
             // --------------------------
@@ -169,6 +183,8 @@ class DisplayPictureScreen extends StatelessWidget {
                   // Pass the automatically generated path to
                   // the DisplayPictureScreen widget.
                   camera: firstCamera,
+                  email: this.email,
+                  password: this.password,
                 ),
               ),
             );
