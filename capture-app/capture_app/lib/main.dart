@@ -26,26 +26,12 @@ Future<void> main() async {
   final firstCamera = cameras.first;
 
   final loadedPrefs = await SharedPreferences.getInstance();
-  final String email = loadedPrefs.getString('email');
-  final String password = loadedPrefs.getString('password');
-
-  // Try to log in automatically
-  final response = await sendLoginRequest(email, password);
-  // After the request is sent, we must wait for the response to validate the info and let us in
-  final resBody = jsonDecode(response.body);
-  bool loginFailed = false;
-
-  if (resBody['token'] != null) { // Persistent login successful
-    log(resBody['token']);
-  } else { // Persistent login failed
-    loginFailed = true;
-  }
-
+  final String token = loadedPrefs.getString('token');
 
   runApp(
     MaterialApp(
       theme: ThemeData.dark(),
-      home: loginFailed ? LoginPage() : TakePictureScreen(camera: firstCamera, email: email, password: password),
+      home: token == 'No token found' ? LoginPage() : TakePictureScreen(camera: firstCamera),
       // home: TakePictureScreen(
       //   // Pass the appropriate camera to the TakePictureScreen widget.
       //   camera: firstCamera,
@@ -57,15 +43,8 @@ Future<void> main() async {
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
-  final String email;
-  final String password;
 
-  const TakePictureScreen(
-      {Key key,
-      @required this.camera,
-      @required this.email,
-      @required this.password})
-      : super(key: key);
+  const TakePictureScreen({Key key, @required this.camera}) : super(key: key);
 
   @override
   TakePictureScreenState createState() => TakePictureScreenState();
@@ -113,8 +92,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                   onPressed: () async { // Log out
                     // Reset stored credentials
                     final prefs = await SharedPreferences.getInstance();
-                    prefs.setString('email', '');
-                    prefs.setString('password', '');
+                    prefs.setString('token', 'No token found');
                     if (Navigator.canPop(context)) {
                       Navigator.pop(context);
                     } else {
@@ -164,8 +142,6 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     builder: (context) => DisplayPictureScreen(
                       // Pass the automatically generated path to
                       // the DisplayPictureScreen widget.
-                      email: widget.email,
-                      password: widget.password,
                       imagePath: image?.path,
                     ),
                   ),
@@ -185,11 +161,9 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 // A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
-  final String email;
-  final String password;
 
   const DisplayPictureScreen(
-      {Key key, this.imagePath, this.email, this.password})
+      {Key key, this.imagePath})
       : super(key: key);
 
   @override
@@ -204,15 +178,11 @@ class DisplayPictureScreen extends StatelessWidget {
         onPressed: () async {
           try {
             String base64Image = imageToBase64(File(imagePath));
-            String email = this.email;
-            String password = this.password;
 
             final prefs = await SharedPreferences.getInstance();
             // read data from token key. If it doesn't exist, return "no token found"
             final token = prefs.getString('token') ?? "No token found";
 
-            log(email);
-            log(password);
             log(token);
 
             // Send the request containing the IMAGE
