@@ -7,7 +7,7 @@ import jwt_decode from "jwt-decode";
 import e from "cors";
 import { set } from "mongoose";
 
-const host = "https://to-hacks2021.herokuapp.com";
+const host = "";
 const socket = io(host);
 const img_link = "https://i.imgur.com/sohWhy9.jpg";
 
@@ -165,7 +165,8 @@ function App() {
           const token = res.data.token;
           setAuthToken(token);
           const decoded = jwt_decode(token);
-          setUser(decoded.user);
+          setUser(decoded);
+          checkToken(decoded);
           setLoginValues({ email: "", password: "" });
         } else {
           setLoginForm(true);

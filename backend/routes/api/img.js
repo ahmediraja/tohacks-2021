@@ -5,6 +5,31 @@ const auth = require("../../middleware/auth");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 const User = require("../../models/User");
+const vision = require("@google-cloud/vision");
+const credentials = require("../../config/cred.json");
+
+function getConfidence(data) {
+  let average = 0;
+  let sum = 0;
+  console.log(data);
+  if (data.textAnnotations) {
+    data.textAnnotations.forEach((data, index) => {
+      sum += data.confidence;
+      average = sum / (index + 1);
+    });
+  } else {
+    data.pages.forEach((data, index) => {
+      sum += data.confidence;
+      average = sum / (index + 1);
+    });
+  }
+
+  return average;
+}
+
+const client = new vision.ImageAnnotatorClient({
+  credentials,
+});
 
 module.exports = function (io) {
   //we define the variables
@@ -18,29 +43,37 @@ module.exports = function (io) {
       console.log(account_id);
       socket.join(account_id);
     });
-
-    // socket.on("imageFromMaster", (data) => {
-    //   //calling a function which is inside the router so we can send a res back
-    //   io.to(conversationObj._id).emit("message", {
-    //     message: newMessage,
-    //     username: data.profile.username,
-    //     userToChat: data.userToChat,
-    //   });
-    // });
   });
   router.post("/", auth, async (req, res) => {
-    //pickedUser is one of the connected client
-    // var pickedUser = "JZLpeA4pBECwbc5IAAAA";
-    // io.to(pickedUser).emit("taskRequest", req.body);
-    // console.log(req.body.image);
-    // sendResponse = function (data) {
-    console.log("hey");
-    console.log(req.user.id);
-    io.to(req.user.id).emit("imageFromServer", {
-      image: req.body.image,
-    });
-    return res.status(200).json({ success: true });
-    // };
+    try {
+      let data = req.body.image;
+      if (data.split(",")[1] !== undefined) {
+        data = data.split(",")[1];
+      }
+      const [result] = await client.documentTextDetection({ image: { content: data } });
+      const handwriting = result.fullTextAnnotation;
+      let handwritingConfidence = getConfidence(handwriting);
+      // console.log(`Confidence: ${handwritingConfidence}`);
+      // console.log(`Handwriting Full text: ${handwriting.text}`);
+
+      const [result2] = await client.textDetection({ image: { content: data } });
+      const printedTest = result2.fullTextAnnotation;
+      let printedConfidence = getConfidence(printedTest);
+      // console.log(`Confidence: ${printedConfidence}`);
+      // console.log(`Printed Full text: ${printedTest.text}`);
+
+      let finalText = printedConfidence >= handwritingConfidence ? handwriting : printedConfidence;
+
+      io.to(req.user.id).emit("imageFromServer", {
+        image: data,
+        text: finalText,
+      });
+      return res.status(200).json({ success: true });
+      // };
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ success: false });
+    }
   });
 
   return router;
