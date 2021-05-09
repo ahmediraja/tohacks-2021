@@ -301,7 +301,7 @@ function App() {
           </div>
         ) : (
           <div class="dashboard">
-            <ul>
+            <ul class="outer-button">
               <li>
                 <a href="#" onClick={onClear}>
                   Clear
@@ -315,14 +315,16 @@ function App() {
               </li>
             </ul>
             <div class="content">
-              <p>Take an image on your mobile device, then wait for it here!</p>
-              {images.map((img, index) => (
-                <div>
-                  <div class="img-holder">
-                    <img class="img" src={img} alt="" />
-                  </div>
-
-                  {img === img_link ? null : (
+              <div class="header-info">
+                <p>Take an image on your mobile device, then wait for it here!</p>
+                <p>Auto-transcribed text will appear here!</p>
+              </div>
+              <div class="image-panel">
+                {images.map((img) => (
+                  <div>
+                    <div class="img-holder">
+                      <img class="img" src={img} alt="" />
+                    </div>
                     <ul class="options">
                       <li>
                         <a href={img} target="_blank" download>
@@ -330,14 +332,24 @@ function App() {
                         </a>
                       </li>
                       <li>
-                        <a href="#" id={index} onClick={onCopy}>
+                        <a href="#" onClick={onCopy}>
                           Copy to Clipboard
                         </a>
                       </li>
                     </ul>
-                  )}
-                </div>
-              ))}
+                    <div class="image-textarea">
+                      <p>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit nisi sed sollicitudin pellentesque.
+                        Nunc posuere purus rhoncus pulvinar aliquam. Ut aliquet tristique nisl vitae volutpat. Nulla aliquet
+                        porttitor venenatis. Donec a dui et dui fringilla consectetur id nec massa. Aliquam erat volutpat. Sed ut
+                        dui ut lacus dictum fermentum vel tincidunt neque. Sed sed lacinia lectus. Duis sit amet sodales felis.
+                        Duis nunc eros, mattis at dui ac, convallis semper risus. In adipiscing ultrices tellus, in suscipit massa
+                        vehicula eu.
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

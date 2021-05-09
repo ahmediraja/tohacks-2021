@@ -60,6 +60,7 @@ a {
 	background-color: var(--col-secondary);
 	transition: 0.2s ease;
 	z-index: -1;
+    border-radius: .5em;
 }
 
 .main-text a:hover::after {
