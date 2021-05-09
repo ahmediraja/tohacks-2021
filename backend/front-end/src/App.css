@@ -18,8 +18,39 @@
 }
 
 .dashboard p {
-    padding: 1em 0;
+    padding: 1em 1em;
+    /*margin: 0 auto;*/
 }
+
+li > a {
+    font-weight: 600;
+}
+
+.outer-button a {
+    color: var(--col-text) !important;
+}
+
+.outer-button li {
+    margin-left: .5em;
+}
+
+.outer-button a::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0%;
+    background-color: var(--col-secondary);
+    transition: 0.2s ease;
+    z-index: -1;
+    border-radius: .5em;
+}
+.outer-button a:hover::after {
+    width: calc(100% + 1px);
+}
+
 
 .dashboard ul {
   height: 2em;
@@ -42,7 +73,7 @@
     color: black;
 }
 
-.dashboard li::after {
+.options li::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -91,6 +122,7 @@
 .options {
   text-align: center !important;
   padding: 1em;
+  margin-bottom: 2em;
 }
 
 /* loading */

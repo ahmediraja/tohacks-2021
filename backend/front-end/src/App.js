@@ -103,11 +103,6 @@ function App() {
       : setRegisterValues({ ...registerValues, [e.target.name]: e.target.value });
   };
 
-  const onDownload = () => {
-    // unused for now
-    // console.log("dl")
-  };
-
   const onCopy = () => {};
 
   const onLogout = () => {
@@ -273,7 +268,7 @@ function App() {
           </div>
         ) : (
           <div class="dashboard">
-            <ul>
+            <ul class="outer-button">
                 <li>
                   <a href="#" onClick={onClear}>Clear</a>
                 </li>
