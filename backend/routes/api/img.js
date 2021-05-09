@@ -27,9 +27,7 @@ module.exports = function (io) {
     //   });
     // });
   });
-
   router.post("/", auth, async (req, res) => {
-    console.log(req.user.id);
     //pickedUser is one of the connected client
     // var pickedUser = "JZLpeA4pBECwbc5IAAAA";
     // io.to(pickedUser).emit("taskRequest", req.body);

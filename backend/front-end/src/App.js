@@ -5,7 +5,7 @@ import "./App.css";
 import io from "socket.io-client";
 import jwt_decode from "jwt-decode";
 
-const socket = io("http://localhost:5000/");
+const socket = io("");
 
 function App() {
   const [loginValues, setLoginValues] = useState({ email: "", password: "" });
@@ -82,12 +82,13 @@ function App() {
   }
 
   socket.once("imageFromServer", (data) => {
-    let blob = base64toBlob(data.image.split(",")[1], "image/png");
+    if (data.image.split(",")[1] !== undefined) {
+      data.image = data.image.split(",")[1];
+    }
+    let blob = base64toBlob(data.image, "image/png");
     let reader = new FileReader();
     reader.addEventListener("loadend", () => {
       let contents = reader.result;
-      console.log("hi");
-      console.log(contents);
       setImage(contents);
     });
     if (blob instanceof Blob) reader.readAsDataURL(blob);
@@ -109,7 +110,7 @@ function App() {
     e.preventDefault();
     axios
       .post(
-        `http://localhost:5000/api/${loginForm ? "auth" : "users"}`,
+        `/api/${loginForm ? "auth" : "users"}`,
         loginForm
           ? {
               email: loginValues.email,
@@ -264,8 +265,6 @@ function App() {
               <div class="content">
                 <p>Take an image on your mobile device, then wait for it here!</p>
                 <div class="img-holder">
-                  {console.log("hey")}
-                  {console.log(image)}
                   <img class="img" src={image} alt="" />
                 </div>
                 <ul class="options">
