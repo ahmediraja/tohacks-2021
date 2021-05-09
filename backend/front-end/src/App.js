@@ -116,6 +116,10 @@ function App() {
     setValidUser(false);
   };
 
+  const onClear = () => {
+	setImages([])
+  }
+
   const onSubmit = (e) => {
     e.preventDefault();
     console.log(loginValues.email);
@@ -270,6 +274,10 @@ function App() {
         ) : (
           <div class="dashboard">
             <ul>
+                <li>
+                  <a href="#" onClick={onClear}>Clear</a>
+                </li>
+				
                 <li>
                   <a href="#" onClick={onLogout}>Log out</a>
                 </li>
