@@ -11,6 +11,28 @@ body {
     font-family: 'Farro', sans-serif !important;
 }
 
+.header-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1.5em;
+}
+
+.image-panel {
+    width: 60%;
+    position: relative;
+}
+
+.image-textarea {
+    width: 66%; /*60 * .66 = 40*/
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(100%);
+    height: 100%;
+    overflow-y: auto;
+
+}
+
 .dashboard {
   color: black;
   width: 100%;
