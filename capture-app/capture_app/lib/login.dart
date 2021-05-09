@@ -60,8 +60,18 @@ class _LoginPageState extends State<LoginPage> {
           String email = emailController.text;
           String password = passController.text;
         
-
-          // ---- HTTP REQUEST GOES HERE ----
+          // Send the LOGIN request
+          http.post(
+            Uri.https('google.com', ''),
+             headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String> {
+              'email': email,
+              'password': password
+            })
+          );
+          // After the request is sent, we must wait for the response to validate the info and let us in
 
           // Obtain a list of the available cameras on the device.
           final cameras = await availableCameras();

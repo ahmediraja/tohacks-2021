@@ -160,16 +160,23 @@ class DisplayPictureScreen extends StatelessWidget {
         child: Icon(Icons.send),
         onPressed: () async {
           try {
-
+            
             String base64Image = imageToBase64(File(imagePath));
             String email = this.email;
             String password = this.password;
             log(email);
             log(password);
-            // --------------------------
-            // INSERT POST IMAGE CODE HERE
-            // --------------------------
 
+            // Send the request containing the IMAGE
+            http.post(
+              Uri.https('google.com', ''),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(<String, String> {
+                'image': base64Image
+              })
+            );
             // Obtain a list of the available cameras on the device.
             final cameras = await availableCameras();
 
