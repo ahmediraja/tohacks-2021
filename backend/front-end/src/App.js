@@ -4,12 +4,10 @@ import axios from "axios";
 import "./App.css";
 import io from "socket.io-client";
 import jwt_decode from "jwt-decode";
-import e from "cors";
-import { set } from "mongoose";
 
-const host = "http://localhost:5000";
+const host = "";
 const socket = io(host);
-const img_link = "https://i.imgur.com/sohWhy9.jpg";
+const img_link = "https://source.unsplash.com/500x800";
 
 function App() {
   const [loginValues, setLoginValues] = useState({ email: "", password: "" });
@@ -92,7 +90,7 @@ function App() {
       } else {
         let text = data.text;
         setImages([contents, ...images]);
-        setTexts([...texts, text]);
+        setTexts([text, ...texts]);
       }
     });
     if (blob instanceof Blob) reader.readAsDataURL(blob);
@@ -128,6 +126,16 @@ function App() {
           "image/png": base64toBlob(data, "image/png"),
         }),
       ]);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const onCopyText = (e) => {
+    try {
+      const index = parseInt(e.target.id);
+      let data = texts[index];
+
+      navigator.clipboard.writeText(data);
     } catch (error) {
       console.error(error);
     }
@@ -324,29 +332,44 @@ function App() {
             </ul>
             <div class="content">
               <div class="header-info">
-                <p>Take an image on your mobile device, then wait for it here!</p>
+                <p>
+                  Take an image on your mobile device, then wait for it here! <br />
+                  If it isn't working, try reloading the page and then sending the image again.
+                </p>
                 <p>Auto-transcribed text will appear here!</p>
               </div>
               <div class="image-panel">
                 {images.map((img, index) => (
-                  <div>
+                  <div className="container">
                     <div class="img-holder">
                       <img class="img" src={img} alt="" />
+                      {img !== img_link ? (
+                        <ul class="options">
+                          <li>
+                            <a href={img} target="_blank" download>
+                              Download
+                            </a>
+                          </li>
+                          <li>
+                            <a href="#" id={index} onClick={onCopy}>
+                              Copy to Clipboard
+                            </a>
+                          </li>
+                        </ul>
+                      ) : null}
                     </div>
-                    <ul class="options">
-                      <li>
-                        <a href={img} target="_blank" download>
-                          Download
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#" onClick={onCopy}>
-                          Copy to Clipboard
-                        </a>
-                      </li>
-                    </ul>
+
                     <div class="image-textarea">
-                      <p>{texts[index]}</p>
+                      {texts[index]}
+                      {img !== img_link ? (
+                        <ul class="options">
+                          <li>
+                            <a href="#" id={index} onClick={onCopyText}>
+                              Copy to Clipboard
+                            </a>
+                          </li>
+                        </ul>
+                      ) : null}
                     </div>
                   </div>
                 ))}

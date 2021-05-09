@@ -18,19 +18,26 @@ body {
 }
 
 .image-panel {
-  width: 60%;
+  width: 100%;
   position: relative;
+  padding: 0 1.5em;
 }
 
 .image-textarea {
-  width: 66%; /*60 * .66 = 40*/
-  position: absolute;
-  top: 0;
-  right: 0;
-  transform: translate(100%);
-  height: 100%;
+  display: inline-block;
+  width: 40%; /*60 * .66 = 40*/
+  /* position: absolute; */
+  /* top: 0;
+  right: 0; */
+  /* transform: translate(100%); */
+  /* height: 100%; */
+  text-align: center;
   margin-top: 4em;
   overflow-y: auto;
+}
+
+.image-textarea p {
+  text-align: center;
 }
 
 .dashboard {
@@ -114,6 +121,10 @@ li > a {
   opacity: 100%;
 }
 
+.container {
+  display: flex;
+  justify-content: space-around;
+}
 .content {
   width: 100%;
   height: 100%;
@@ -128,7 +139,8 @@ li > a {
 .img-holder {
   /*    max-height: 75%;*/
   /*    overflow: hidden;*/
-  margin: 0 auto;
+  /* margin: 0 auto; */
+  width: 50%;
 }
 
 .img {
@@ -138,8 +150,9 @@ li > a {
   margin: 0;
   /*    width: 100%;
   height: 100%;*/
-  width: 75%;
-  height: 60vh;
+  width: 70%;
+  /* height: 60vh; */
+  display: inline-block;
   object-fit: contain;
 }
 
