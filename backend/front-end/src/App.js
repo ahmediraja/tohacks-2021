@@ -117,7 +117,7 @@ function App() {
   };
 
   const onClear = () => {
-	setImages([])
+	setImages(["https://i.imgur.com/sohWhy9.jpg"])
   }
 
   const onSubmit = (e) => {
