@@ -15,7 +15,6 @@ module.exports = function (io) {
     console.log("Server-Client Connected!");
 
     socket.on("connected", function (account_id) {
-      console.log(account_id);
       socket.join(account_id);
     });
 
