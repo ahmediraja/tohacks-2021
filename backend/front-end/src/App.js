@@ -7,7 +7,7 @@ import jwt_decode from "jwt-decode";
 import e from "cors";
 import { set } from "mongoose";
 
-const host = "";
+const host = "http://localhost:5000";
 const socket = io(host);
 const img_link = "https://i.imgur.com/sohWhy9.jpg";
 
@@ -21,6 +21,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [socketConnected, setSocketConnected] = useState(false);
   const [images, setImages] = useState([img_link]);
+  const [texts, setTexts] = useState(["Start uploading images!"]);
 
   // Auth
   const checkToken = async (decoded) => {
@@ -86,13 +87,18 @@ function App() {
       let contents = reader.result;
       if (images[0] === img_link) {
         setImages([contents]);
+        let text = data.text;
+        setTexts([text]);
       } else {
+        let text = data.text;
         setImages([contents, ...images]);
+        setTexts([...texts, text]);
       }
     });
     if (blob instanceof Blob) reader.readAsDataURL(blob);
   });
   if (validUser && !socketConnected) {
+    console.log(user.id);
     socket.emit("connected", user.id);
     setSocketConnected(true);
   }
@@ -136,10 +142,12 @@ function App() {
     setUser({ id: null, email: null });
     setSocketConnected(false);
     setImages([img_link]);
+    setTexts(["Start uploading images!"]);
   };
 
   const onClear = () => {
     setImages([img_link]);
+    setTexts(["Start uploading images!"]);
   };
 
   const onSubmit = (e) => {
@@ -320,7 +328,7 @@ function App() {
                 <p>Auto-transcribed text will appear here!</p>
               </div>
               <div class="image-panel">
-                {images.map((img) => (
+                {images.map((img, index) => (
                   <div>
                     <div class="img-holder">
                       <img class="img" src={img} alt="" />
@@ -338,14 +346,7 @@ function App() {
                       </li>
                     </ul>
                     <div class="image-textarea">
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit nisi sed sollicitudin pellentesque.
-                        Nunc posuere purus rhoncus pulvinar aliquam. Ut aliquet tristique nisl vitae volutpat. Nulla aliquet
-                        porttitor venenatis. Donec a dui et dui fringilla consectetur id nec massa. Aliquam erat volutpat. Sed ut
-                        dui ut lacus dictum fermentum vel tincidunt neque. Sed sed lacinia lectus. Duis sit amet sodales felis.
-                        Duis nunc eros, mattis at dui ac, convallis semper risus. In adipiscing ultrices tellus, in suscipit massa
-                        vehicula eu.
-                      </p>
+                      <p>{texts[index]}</p>
                     </div>
                   </div>
                 ))}

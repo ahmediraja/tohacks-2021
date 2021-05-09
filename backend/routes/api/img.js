@@ -11,7 +11,6 @@ const credentials = require("../../config/cred.json");
 function getConfidence(data) {
   let average = 0;
   let sum = 0;
-  console.log(data);
   if (data.textAnnotations) {
     data.textAnnotations.forEach((data, index) => {
       sum += data.confidence;
@@ -62,7 +61,7 @@ module.exports = function (io) {
       // console.log(`Confidence: ${printedConfidence}`);
       // console.log(`Printed Full text: ${printedTest.text}`);
 
-      let finalText = printedConfidence >= handwritingConfidence ? handwriting : printedConfidence;
+      let finalText = printedConfidence >= handwritingConfidence ? handwriting.text : printedConfidence.text;
 
       io.to(req.user.id).emit("imageFromServer", {
         image: data,
