@@ -70,34 +70,33 @@ class _LoginPageState extends State<LoginPage> {
               body: jsonEncode(
                   <String, String>{'email': email, 'password': password}));
           // After the request is sent, we must wait for the response to validate the info and let us in
+          final resBody = jsonDecode(response.body);
 
-          log(response.body);
+          if (resBody['token'] != null){ // if a token was given, there was no error, so continue
+            log(resBody['token']);
+            final prefs = await SharedPreferences.getInstance();
+            prefs.setString('token', resBody['token']);
 
-          final prefs = await SharedPreferences.getInstance();
-          // final token = response.body.substring(10);
-          final len = response.body.length;
-          log(response.body.substring(10, len - 2));
-          prefs.setString('token', response.body.substring(10, len - 2));
+            // Obtain a list of the available cameras on the device.
+            final cameras = await availableCameras();
 
-          // Obtain a list of the available cameras on the device.
-          final cameras = await availableCameras();
+            // Get a specific camera from the list of available cameras.
+            final firstCamera = cameras.first;
 
-          // Get a specific camera from the list of available cameras.
-          final firstCamera = cameras.first;
-
-          // Navigator.of(context).pushNamed(HomePage.tag);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => TakePictureScreen(
-                // Pass the automatically generated path to
-                // the DisplayPictureScreen widget.
-                email: email,
-                password: password,
-                camera: firstCamera,
+            // Navigator.of(context).pushNamed(HomePage.tag);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TakePictureScreen(
+                  // Pass the automatically generated path to
+                  // the DisplayPictureScreen widget.
+                  email: email,
+                  password: password,
+                  camera: firstCamera,
+                ),
               ),
-            ),
-          );
+            );
+          }
         },
         style: ElevatedButton.styleFrom(
           onPrimary: Colors.black,
